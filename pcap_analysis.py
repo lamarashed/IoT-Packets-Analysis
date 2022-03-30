@@ -1,6 +1,25 @@
-#!/usr/bin/env python
+'''
+
+authors: Lama, Lin
+
+Device Fingerprint, it takes as input pcaps and tests each packets against 23 features:
+
+
+Link layer protocol (2)                 ARP/LLC
+Network layer protocol (4)              IP/ICMP/ICMPv6/EAPoL
+Transport layer protocol (2)            TCP/UDP
+Application layer protocol (8)          HTTP/HTTPS/DHCP/BOOTP/SSDP/DNS/MDNS/ NTP
+IP options (2)                          Padding/RouterAlert
+Packet content (2)                      Size (int)/Raw data
+IP address (1)                          Destination IP counter (int)
+Port class (2)                          Source (int) / Destination (int)
+
+usage : python pcap_analysis.py --pcap <pcap file>
+example : 
+'''
+
 import argparse
-import os
+import glob, os
 import sys
 from telnetlib import IP
 from typing import Protocol
@@ -9,8 +28,12 @@ from scapy.all import *
 import warnings
 warnings.filterwarnings("ignore")
 import pandas as pd
-from datetime import datetime
 import sqlite3 as sq
+import datetime
+import time
+import getopt
+import socket
+from struct import *
 
 
 def pandas_to_sqllight(table):
@@ -34,6 +57,7 @@ def read_pcap(file_name):
     print('{} contains {} packets'.format(file_name, len(scapy_cap)))
     print(scapy_cap)
     print("############## Packet Summary ##############")
+    # print(scapy_cap.summary())
     print_summary(scapy_cap)
     print("############## Session Summary ##############")
     inter_arrival_time(sessions)
@@ -61,6 +85,8 @@ def inter_arrival_time(sessions):
     sessions_table = pd.DataFrame(columns = ["IP_src","sport","Protocl","IP_dst","dport", "Total-Packets","Direction","Time"])
     list = []
     i =0 
+    flow_duration = []
+
     for k, v in sessions.items():
         if i >= 1: 
             tot_packets = len(v)
@@ -80,14 +106,11 @@ def inter_arrival_time(sessions):
              direction="inbound"
             pkttime = v[0].time
             list.append({'IP_src':srcip, "sport":srcport ,'Protocl':proto, "IP_dst":dstip,'dport': dstport, 'Total-Packets':tot_packets,"Direction":direction, "Time":pkttime})
-            # print('%s,%s,%s,%s,%s,%s,%s,%s\n' % (srcip, dstip, proto, srcport,
-            #                                 dstport, tot_packets, direction, pkttime))
         i += 1 
     sessions_table  = sessions_table .append(list)
 
     print(sessions_table)
 
-    
 
 # def parse_netflow(pkt):  
 #     # grabs 'netflow-esqe' fields from packets in a PCAP file
