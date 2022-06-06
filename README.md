@@ -15,4 +15,4 @@ python sniff_iot.py --devid <ip address of device you want to sniff>
 
 To learn more about this project you can find this project's report here : 
 2022_Spring_Feature_Selection_for_IoT_Device_Identification_Based_on_Packet_Flow_Information
-https://drive.google.com/drive/folders/1k3Mj0tEbKmXRvR_vG1qrN_DRhalPyhEV
+https://drive.google.com/file/d/1WkA91jhuHoykgXtXj2RdIWDYXLzuHHfo/view?usp=sharing
