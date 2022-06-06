@@ -7,15 +7,16 @@ from sklearn.preprocessing import StandardScaler
 
 
 def predict(flow_file):
+    # load std scaler used to normlized the data before training the model 
     loaded_std_scaler = joblib.load("./std_scaler.bin")
     X_test = loaded_std_scaler.transform(flow_file)
-    # Random Forest 
+    # load trained RF model
     loaded_rf = joblib.load("./random_forest.joblib")
     y_pred = loaded_rf.predict(X_test)
     result = Counter(y_pred).most_common()
     res = [list(ele) for ele in result]
     print("***** Device Classification Random Forest: ",print_result(res),"*****") 
-    # KNN 
+    # load trained KNN model
     loaded_knn = joblib.load("./KNeighborsClassifier.joblib")
     y2_pred = loaded_knn.predict(X_test)
     result2 = Counter(y2_pred).most_common()
@@ -23,11 +24,12 @@ def predict(flow_file):
     print("***** Device Classification KNN: ",print_result(res2),"*****")
 
 
-
+## Print device type/name ## 
 def print_result(res):
     f = open('device_label.json')
     data = json.load(f)
     dataList =  data['lables']
+    # loop through json file to find the device name
     for i in res:
         for index in range(len(data['lables'])):
             if (i[0] == index):

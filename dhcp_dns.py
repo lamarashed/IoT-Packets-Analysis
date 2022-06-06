@@ -4,9 +4,11 @@ import requests
 from scapy.all import *
 from scapy.layers.dns import DNS, DNSQR
 import os 
-
+from fingerbank_key import *
 cwd = os.getcwd()
-fingerbank_key_val = 'd01ff9d8b65c939fea59a3c2ec19e52921a1ab49'
+
+
+## Return Finger Bank Device name ##
 
 def DHCP_profile(pcap):
     # Get DHCP fingerprint from kyd.py
@@ -25,6 +27,8 @@ def DHCP_profile(pcap):
     else:
         print("No DHCP fingerprint")
 
+
+## Query FingerBank API and return device name ##
 def query_fingerbank(fingerPrint):
     headers = {'Content-Type': 'application/json'}
     url = 'https://api.fingerbank.org/api/v2/combinations/interrogate?key='\
@@ -41,6 +45,7 @@ def query_fingerbank(fingerPrint):
         t = device_name.split('/', 1)[0]
         return t, info['device']['name'] 
 
+## Return Domain name (DNS)
 def domain_name(pcap):
     pcap_path = cwd +"/"+  pcap
     dns_packets = rdpcap(pcap_path)

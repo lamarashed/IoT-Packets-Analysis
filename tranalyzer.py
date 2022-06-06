@@ -10,7 +10,7 @@ import ml_classification
 
 cwd = os.getcwd()
 
-
+## Final feature vector obtained after implementing the feature selection methods ##
 features = [
 'connDip',
 'connSip',
@@ -20,6 +20,7 @@ features = [
 'tcpRTTAckTripMax'
 ]
 
+## Convert PCAP file to flow file using Tranalyzer and call ml_classification ##
 def convert_pcap(pcap_path):
     pcap_path2 = cwd +"/"+  pcap_path
     T2Utils.run_tranalyzer(
@@ -31,10 +32,11 @@ def convert_pcap(pcap_path):
     )
     file_name = os.path.splitext(pcap_path)[0]
     path = cwd +"/"+ file_name + "_flows.txt"
+    # Convert flow text to csv file
     read_file = pd.read_csv(path, index_col=None, header=0, delimiter='\t')
     read_file.to_csv(file_name+".csv",index=None)
     flow_file = cwd +"/"+ file_name + ".csv"
     flow_file2 = pd.read_csv(flow_file)
     flow_file3 = flow_file2[features]
+    # Call predict function to predict the device name based on the flows 
     ml_classification.predict(flow_file3)
-
