@@ -8,7 +8,7 @@ install the dependencies in requirements.txt and the data folders and model whic
 
 ## Run 
 ```
-python sniff_iot.py --devid <mac or ip address of device you want to sniff>
+python sniff_iot.py --devid <ip address of device you want to sniff>
 ```
 
 ## Report : 
